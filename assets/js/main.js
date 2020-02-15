@@ -86,14 +86,21 @@ $(document).ready(function() {
         // Create form to save initials with high score
         var saveScoreForm = $( "<form class='text-left'></form>" );
         $( "#quiz-container" ).append(saveScoreForm);
-        var initialsInput = $( "<div class='form-group'><label>Enter your initials:&nbsp;</label><input type='text'></div>" );
+        var initialsInput = $( "<div class='form-group'><label>Enter your initials:&nbsp;</label><input id='initials' type='text'></div>" );
         saveScoreForm.append(initialsInput);
-        var submitButton = $( "<button type='submit' class='btn btn-primary'>Submit</button>" );
+        var submitButton = $( "<button type='submit' id='add-score' class='btn btn-primary'>Submit</button>" );
         saveScoreForm.append(submitButton);
 
         // Create high score list from local storage values
         var highScoresList = $("<div><h3>High Scores</h3><ul id='high-scores-list'></ul></div>");
         $( "#high-scores" ).append(highScoresList);
+//        for (score of localStorage.)
+
+        $("#add-score").on("click", function(event) {
+            // Add high score to local storage
+            event.preventDefault();
+            localStorage.setItem($( "#initials" ).val(), finalScore);
+        });
     };
 
     // Show the intro
