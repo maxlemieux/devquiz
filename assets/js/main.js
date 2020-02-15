@@ -32,12 +32,14 @@ $(document).ready(function() {
     $( "#main" ).append(quizContainer);
 
     function displayQuestion(question) {
-        $( "#quiz-container" ).empty();
+        quizContainer.empty();
+        var questionContainer = $( "<div class='card p-3' id='question-card'></div>" );
+        quizContainer.append(questionContainer);
         var questionElement = $( "<p>" + questionSet[question].question + "</p>" );
-        $( "#quiz-container" ).append(questionElement);
+        $( "#question-card" ).append(questionElement);
         $.each(questionSet[question].answers, function(i, value) {
-            var answerElement = $( "<button type='button' class='btn btn-primary my-1' id=" + i + ">" + value + "</button><br />" );
-            $( "#quiz-container" ).append(answerElement);
+            var answerElement = $( "<button type='button' class='btn btn-primary my-1 p-3' id=" + i + ">" + value + "</button><br />" );
+            $( "#question-card" ).append(answerElement);
 
             // When the answer button is clicked, check if it's correct
             $("#" + i).on("click", function(event) {
@@ -74,17 +76,17 @@ $(document).ready(function() {
 
     // Show page that allows you to Save High Score and Initials
     function showSaveHighScore() {
-        $( "#quiz-container" ).empty();
+        quizContainer.empty();
         // Set up high score entry and displays
         var scoreLayout = $( "<div class='row'><div class='col text-left' id='score-entry'></div><div class='col' id='high-scores'></div></div>" );
-        $( "#quiz-container" ).append(scoreLayout);
+        quizContainer.append(scoreLayout);
 
         // Show the score for this quiz
         var showScore = $( "<h3>Score: " + finalScore + "</h3>" );
         $( "#score-entry" ).append(showScore);
         // Create form to save initials with high score
         var saveScoreForm = $( "<form class='text-left'></form>" );
-        $( "#quiz-container" ).append(saveScoreForm);
+        quizContainer.append(saveScoreForm);
         var initialsInput = $( "<div class='form-group'><label>Enter your initials:&nbsp;</label><input id='initials' type='text'></div>" );
         saveScoreForm.append(initialsInput);
         var submitButton = $( "<button type='submit' id='add-score' class='btn btn-primary'>Submit</button>" );
@@ -103,16 +105,15 @@ $(document).ready(function() {
 
     // Show the intro
     function showIntro() {
-        // Intro text with start button
+        // Intro text
         var introText = $( "<div id='intro-text'></div>");
         introText.text("This is a quiz which will test your knowledge of Javascript. When you are ready to begin, click the Start button. You will have 75 seconds to complete the quiz. Wrong answers will deduct 20 seconds from the timer.");
+        quizContainer.append(introText);
+        // Start button
         var startButton = $( "<button id='start-button' class='btn btn-primary btn-lg'><h1><span class='fa fa-question'>Start</span></h1></button>" );
-
-        $( "#quiz-container" ).append(introText);
-        $( "#quiz-container" ).append(startButton);
-
-        $("#start-button").on("click", function() {
-            // Start the quiz
+        quizContainer.append(startButton);
+        startButton.on("click", function() {
+            // Run the quiz!
             startQuiz();
         });
     };
@@ -120,7 +121,7 @@ $(document).ready(function() {
     // Run the quiz!
     function startQuiz() {
         // Empty out the quiz container to prepare to show questions
-        $( "#quiz-container" ).empty();
+        quizContainer.empty();
 
         // Display the first question
         displayQuestion(0);
