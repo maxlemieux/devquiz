@@ -2,17 +2,17 @@ $(document).ready(function() {
     // Array of questions to ask in the quiz
     var questionSet = [
         {
-            question: "Why is up?",
-            answers: ["Just because", "I don't know"],
-            correct: 0
-        },
-        {
-            question: "What is your favorite color?",
-            answers: ["Red", "Blue", "Yellow"],
+            question: "What are the two basic groups of datatypes in JavaScript?",
+            answers: ["Type A and Type B", "Primitive types and reference types", "Archetypes and prototypes", "Typology and typography"],
             correct: 1,
         },
         {
-            question: "What is the strict equality operator in Javascript?",
+            question: "What symbol is used for comments in JavaScript?",
+            answers: ["#", "//", "// and /* */", "/* */"],
+            correct: 2,
+        },
+        {
+            question: "What is the strict equality operator in JavaScript?",
             answers: ["+=", "==", "!==", "==="],
             correct: 3,
         },
@@ -21,6 +21,11 @@ $(document).ready(function() {
             answers: ["ES5", "EcmaScript", "JavaScript", "ES6", "ActionScript"],
             correct: 3,
         },
+        {
+            question: "What is *not* a valid way to add a property to an object in JavaScript?",
+            answers: ["object['property'] = value", "object(property)[value]", "object.property = value"],
+            correct: 1,
+        }
     ];
     var timerElement = $( "#timer-seconds" );
     var highScoresLink = $( "#high-scores-link" );
