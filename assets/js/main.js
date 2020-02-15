@@ -72,7 +72,9 @@ $(document).ready(function() {
     // Check if the answer given was the correct one, and handle consequences
     function checkCorrect(event, question) {
         if (event.target.id == questionSet[question].correct) {
-            var alertCorrect = $( "<div class='alert alert-success m-3'>Correct!</div>" );
+            var alertCorrect = $( "<div>" );
+            alertCorrect.attr("class", "alert alert-success m-3");
+            alertCorrect.text("Correct!");
             $( "#main" ).append(alertCorrect);
         } else { // incorrect
             var alertIncorrect = $( "<div class='alert alert-danger m-3'>Incorrect!</div>" );
@@ -135,7 +137,12 @@ $(document).ready(function() {
                                     <input id='initials' type='text'>\
                                 </div>" );
         saveScoreForm.append(initialsInput);
-        var submitButton = $( "<button type='submit' id='add-score' class='btn btn-primary'></button>" );
+
+        // Create the submit button for the form
+        var submitButton = $( "<button>" );
+        submitButton.attr("type", "submit");
+        submitButton.attr("id", "add-score");
+        submitButton.attr("class", "btn btn-primary");
         submitButton.text("Submit");
         saveScoreForm.append(submitButton);
 
@@ -259,7 +266,8 @@ $(document).ready(function() {
         timerElement.text(secondsLeft);
 
         // Start the timer
-        setInterval(quizTimer, 1000);
+        // Global variable "timerInterval" already declared, we set it here
+        timerInterval = setInterval(quizTimer, 1000);
     };
 
     // Operate the timer during the quiz
