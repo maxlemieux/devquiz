@@ -49,14 +49,14 @@ $(document).ready(function() {
         $.each(questionSet[question].answers, function(i, value) {
             var answerElement = $( "<button type='button' class='btn btn-primary my-1 p-3' id=" + i + ">" + value + "</button><br />" );
             $( "#question-card" ).append(answerElement);
-            // When the answer button is clicked, check if it's correct
+            // When the answer button is clicked, check to see if it's correct
             $("#" + i).on("click", function(event) {
                 checkCorrect(event, question);
             });
         });
     };
 
-    // Check if the answer given was the correct one
+    // Check if the answer given was the correct one, and handle consequences
     function checkCorrect(event, question) {
         if (event.target.id == questionSet[question].correct) {
             var alertCorrect = $( "<div class='alert alert-success m-3'>Correct!</div>" );
@@ -68,14 +68,12 @@ $(document).ready(function() {
             secondsLeft = secondsLeft - 20;
             timerElement.text(secondsLeft);
         };
-
         // Fade out the correctness alert
         window.setTimeout(function() {
             $(".alert").fadeTo(500, 0).slideUp(500, function(){
                 $(this).remove(); 
             });
         }, 1000);
-        
         // Go to next question
         showNextQuestion(question);
     };
@@ -83,6 +81,7 @@ $(document).ready(function() {
     // Calculate next question to show, or show score entry page if no more questions
     function showNextQuestion(question) {
         var nextQuestion = parseInt(question) + 1;
+        // Does the next question exist? Set final score and show high score entry if not
         if (nextQuestion < questionSet.length) {
             displayQuestion(nextQuestion);
         } else {
@@ -95,6 +94,7 @@ $(document).ready(function() {
     // Show page that allows you to Save High Score and Initials
     function showSaveHighScore() {
         quizContainer.empty();
+
         // Set up high score entry and displays
         var scoreLayout = $( "<div class='row'><div class='col text-left' id='score-entry'></div><div class='col' id='high-scores'></div></div>" );
         quizContainer.append(scoreLayout);
@@ -103,6 +103,7 @@ $(document).ready(function() {
         // Show the score for this quiz
         var showScore = $( "<h3>Score: " + finalScore + "</h3>" );
         scoreEntry.append(showScore);
+        
         // Create form to save initials with high score
         var saveScoreForm = $( "<form class='text-left'></form>" );
         scoreEntry.append(saveScoreForm);
@@ -130,6 +131,7 @@ $(document).ready(function() {
             var thisInitials = $( "#initials" ).val();
             highScores[thisInitials] = finalScore;
             localStorage.setItem("highScores", JSON.stringify(highScores));
+            
             // Redraw high score list
             showHighScoresList();
         });
@@ -138,14 +140,15 @@ $(document).ready(function() {
     function printHighScores() {  
         highScoresList = $( "#high-scores-list" );    
         highScoresList.empty();
+        
         // Get the high scores from local storage and sort by score
         var highScores = JSON.parse(localStorage.getItem("highScores"));
         var sortedScores = Object.entries(highScores).sort(function(a, b) {
             return b[1] - a[1];
         });
+        
         // Print the scores
         for (score of sortedScores) {
-            //console.log(score);
             scoreElement = $( "<li>" + score[0] + ": " + score[1] + "</li>" );
             highScoresList.append(scoreElement);
         };
@@ -159,11 +162,15 @@ $(document).ready(function() {
         quizContainer.append(highScoresList);
         // Populate the high scores container
         printHighScores();
+        // Show button to return to intro
+        showIntroButton();    
+    };
+
+    function showIntroButton() {
         // Add a button to return to the introduction screen
         var introButton = $( "<button id='intro-button' class='btn btn-primary m-3'><h3><span class='fa fa-question'>Back</span></h3></button>" );
         quizContainer.append(introButton);
         introButton.on("click", function() {
-            // Show the intro
             showIntro();
         });
     };
@@ -171,25 +178,25 @@ $(document).ready(function() {
     // Show the intro
     function showIntro() {
         quizContainer.empty();
+        
         // Intro text
         var introText = $( "<div id='intro-text' class='card p-3'></div>");
         introText.text("This is a quiz which will test your knowledge of Javascript. When you are ready to begin, click the Start button. You will have 75 seconds to complete the quiz. Wrong answers will deduct 20 seconds from the timer.");
         quizContainer.append(introText);
+        
         // Start button
         var startButton = $( "<button id='start-button' class='btn btn-primary btn-lg m-3'><h1><span class='fa fa-question'>Start</span></h1></button>" );
         quizContainer.append(startButton);
         startButton.on("click", function() {
-            // Run the quiz!
             startQuiz();
         });
     };
 
     // Run the quiz!
     function startQuiz() {
-        // Empty out the quiz container to prepare to show questions
         quizContainer.empty();
         // Display the first question
-        displayQuestion(0);
+        displayQuestion(0);     
         // Start the timer
         setTime();
     };
@@ -210,9 +217,13 @@ $(document).ready(function() {
         // Update display with new time remaining
         timerElement.text(secondsLeft);
         // Check if the timer has run out
-        if(secondsLeft === 0) {
+        if(secondsLeft < 1) {
             clearInterval(timerInterval);
-            timerElement.text = "0";
+            timerElement.text("0");
+            quizContainer.empty();
+            var outOfTimeMsg = $( "<p>You ran out of time. Try again?</p>" );
+            quizContainer.append(outOfTimeMsg);
+            showIntroButton();
         };
     };
 
