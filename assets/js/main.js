@@ -61,7 +61,7 @@ $(document).ready(function() {
         if (event.target.id == questionSet[question].correct) {
             var alertCorrect = $( "<div class='alert alert-success m-3'>Correct!</div>" );
             $( "#main" ).append(alertCorrect);
-        } else {
+        } else { // incorrect
             var alertIncorrect = $( "<div class='alert alert-danger m-3'>Incorrect!</div>" );
             $( "#main" ).append(alertIncorrect);
             // Timer penalty
@@ -80,14 +80,19 @@ $(document).ready(function() {
 
     // Calculate next question to show, or show score entry page if no more questions
     function showNextQuestion(question) {
-        var nextQuestion = parseInt(question) + 1;
-        // Does the next question exist? Set final score and show high score entry if not
-        if (nextQuestion < questionSet.length) {
-            displayQuestion(nextQuestion);
+        // Check in case we're out of time
+        if (secondsLeft < 1) {
+            outOfTime();
         } else {
-            finalScore = secondsLeft;
-            clearInterval(timerInterval);
-            showSaveHighScore();
+            var nextQuestion = parseInt(question) + 1;
+            // Does the next question exist? Set final score and show high score entry if not
+            if (nextQuestion < questionSet.length) {
+                displayQuestion(nextQuestion);
+            } else {
+                finalScore = secondsLeft;
+                clearInterval(timerInterval);
+                showSaveHighScore();
+            };
         };
     };
 
@@ -217,14 +222,19 @@ $(document).ready(function() {
         // Update display with new time remaining
         timerElement.text(secondsLeft);
         // Check if the timer has run out
-        if(secondsLeft < 1) {
-            clearInterval(timerInterval);
-            timerElement.text("0");
-            quizContainer.empty();
-            var outOfTimeMsg = $( "<p>You ran out of time. Try again?</p>" );
-            quizContainer.append(outOfTimeMsg);
-            showIntroButton();
+        if (secondsLeft < 1) {
+            outOfTime();
         };
+    };
+
+    // Show out of time screen if the timer runs out or a question is answered incorrectly with less than 20 seconds remaining
+    function outOfTime() {
+        clearInterval(timerInterval);
+        timerElement.text("0");
+        quizContainer.empty();
+        var outOfTimeMsg = $( "<p class='card p-3 m-3'>You ran out of time. Try again?</p>" );
+        quizContainer.append(outOfTimeMsg);
+        showIntroButton();
     };
 
     // Call showIntro for the first time
