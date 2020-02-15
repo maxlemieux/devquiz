@@ -131,8 +131,8 @@ $(document).ready(function() {
         var saveScoreForm = $( "<form class='text-left'></form>" );
         scoreEntry.append(saveScoreForm);
         var initialsInput = $( "<div class='form-group'>\
-                                <label>Enter your initials:&nbsp;</label>\
-                                <input id='initials' type='text'>\
+                                    <label>Enter your initials:&nbsp;</label>\
+                                    <input id='initials' type='text'>\
                                 </div>" );
         saveScoreForm.append(initialsInput);
         var submitButton = $( "<button type='submit' id='add-score' class='btn btn-primary'></button>" );
@@ -178,7 +178,8 @@ $(document).ready(function() {
             
             // Print the scores
             for (score of sortedScores) {
-                var scoreElement = $( "<li>" + score[0] + ": " + score[1] + "</li>" );
+                var scoreElement = $( "<li>" );
+                scoreElement.text(score[0] + ": " + score[1]);
                 highScoresList.append(scoreElement);
             };
         } else {
@@ -218,16 +219,19 @@ $(document).ready(function() {
         quizContainer.empty();
 
         // Intro text
-        var introText = $( "<div id='intro-text' class='text-left card p-3'></div>");
+        var introText = $( "<div>" );
+        introText.attr("id", "intro-text");
+        introText.attr("class", "text-left card p-3");
         introText.html("<p>This is a quiz which will test your knowledge of JavaScript.</p>\
                         <p>When you are ready to begin, click the Start button.</p>\
                         <p>You will have 75 seconds to complete the quiz. Wrong answers will deduct 20 seconds from the timer.</p>");
         quizContainer.append(introText);
 
         // Start button
-        var startButton = $( "<button id='start-button' class='btn btn-primary btn-lg m-3'>\
-                                <h1><span class='fa fa-question'>Start</span></h1>\
-                            </button>" );
+        var startButton = $( "<button>" );
+        startButton.attr("id", "start-button");
+        startButton.attr("class", "btn btn-primary btn-lg m-3");
+        startButton.html("<h1>Start</h1>");
         quizContainer.append(startButton);
         startButton.on("click", function() {
             startQuiz();
