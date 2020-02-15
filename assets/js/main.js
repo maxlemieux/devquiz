@@ -139,6 +139,8 @@ $(document).ready(function() {
                 var highScores = {};
             };
             var thisInitials = $( "#initials" ).val();
+            // Strip quotes and other special charactersfrom initials
+            thisInitials = thisInitials.replace(/[;:'"=$]+/g, '');
             highScores[thisInitials] = finalScore;
             localStorage.setItem("highScores", JSON.stringify(highScores));
             
