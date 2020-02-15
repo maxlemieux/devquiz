@@ -193,8 +193,10 @@ $(document).ready(function() {
         quizContainer.empty();
         clearInterval(timerInterval);
         timerElement.text("0");
-        var highScoresList = $("<div class='card p-3'><h3>High Scores</h3><ul id='high-scores-list'></ul></div>");
-        quizContainer.append(highScoresList);
+        var highScoresContainer = $("<div>");
+        highScoresContainer.attr("class", "card p-3");
+        highScoresContainer.html("<h3>High Scores</h3><ul id='high-scores-list'></ul>");
+        quizContainer.append(highScoresContainer);
 
         // Populate the high scores container
         printHighScores();
@@ -206,7 +208,7 @@ $(document).ready(function() {
     function showIntroButton() {
         // Add a button to return to the introduction screen
         var introButton = $( "<button id='intro-button' class='btn btn-primary m-3'>\
-                                <h3><span class='fa fa-question'>Back</span></h3>\
+                                <h3>Back</h3>\
                             </button>" );
         quizContainer.append(introButton);
         introButton.on("click", function() {
@@ -278,7 +280,9 @@ $(document).ready(function() {
         clearInterval(timerInterval);
         timerElement.text("0");
         quizContainer.empty();
-        var outOfTimeMsg = $( "<p class='card p-3 m-3'>You ran out of time. Try again?</p>" );
+        var outOfTimeMsg = $( "<p>" );
+        outOfTimeMsg.attr("class", "card p-3 m-3");
+        outOfTimeMsg.text("You ran out of time. Try again?");
         quizContainer.append(outOfTimeMsg);
         showIntroButton();
     };
