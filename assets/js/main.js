@@ -207,9 +207,10 @@ $(document).ready(function() {
 
     function showIntroButton() {
         // Add a button to return to the introduction screen
-        var introButton = $( "<button id='intro-button' class='btn btn-primary m-3'>\
-                                <h3>Back</h3>\
-                            </button>" );
+        var introButton = $( "<button>" );
+        introButton.attr("id", "intro-button");
+        introButton.attr("class", "btn btn-primary m-3");
+        introButton.html("<h3>Back</h3>");
         quizContainer.append(introButton);
         introButton.on("click", function() {
             showIntro();
@@ -258,7 +259,7 @@ $(document).ready(function() {
         timerElement.text(secondsLeft);
 
         // Start the timer
-        timerInterval = setInterval(quizTimer, 1000);
+        setInterval(quizTimer, 1000);
     };
 
     // Operate the timer during the quiz
