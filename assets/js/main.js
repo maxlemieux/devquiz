@@ -39,7 +39,7 @@ $(document).ready(function() {
         $.each(questionSet[question].answers, function(i, value) {
             var answerElement = $( "<button type='button' class='btn btn-primary my-1' id=" + i + ">" + value + "</button><br />" );
             $( "#quiz-container" ).append(answerElement);
-            
+
             // When the answer button is clicked, check if it's correct
             $("#" + i).on("click", function(event) {
                 checkCorrect(event, question);
@@ -63,7 +63,7 @@ $(document).ready(function() {
 
     // Go to next question
     function showNextQuestion(question) {
-        nextQuestion = parseInt(question) + 1;
+        var nextQuestion = parseInt(question) + 1;
         if (nextQuestion < questionSet.length) {
             displayQuestion(nextQuestion);
         } else {
@@ -76,8 +76,24 @@ $(document).ready(function() {
     // Show page that allows you to Save High Score and Initials
     function showSaveHighScore() {
         $( "#quiz-container" ).empty();
-        var showScore = $( "<p>Score: " + finalScore + "</p>" );
-        $( "#quiz-container" ).append(showScore);
+        // Set up high score entry and displays
+        var scoreLayout = $( "<div class='row'><div class='col text-left' id='score-entry'></div><div class='col' id='high-scores'></div></div>" );
+        $( "#quiz-container" ).append(scoreLayout);
+
+        // Show the score for this quiz
+        var showScore = $( "<h3>Score: " + finalScore + "</h3>" );
+        $( "#score-entry" ).append(showScore);
+        // Create form to save initials with high score
+        var saveScoreForm = $( "<form class='text-left'></form>" );
+        $( "#quiz-container" ).append(saveScoreForm);
+        var initialsInput = $( "<div class='form-group'><label>Enter your initials:&nbsp;</label><input type='text'></div>" );
+        saveScoreForm.append(initialsInput);
+        var submitButton = $( "<button type='submit' class='btn btn-primary'>Submit</button>" );
+        saveScoreForm.append(submitButton);
+
+        // Create high score list from local storage values
+        var highScoresList = $("<div><h3>High Scores</h3><ul id='high-scores-list'></ul></div>");
+        $( "#high-scores" ).append(highScoresList);
     };
 
     // Show the intro
