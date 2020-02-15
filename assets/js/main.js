@@ -17,8 +17,8 @@ $(document).ready(function() {
             correct: 3,
         },
         {
-            question: "What is the latest released standard for the Javascript language?",
-            answers: ["ES5", "EcmaScript", "Javascript", "ES6", "ActionScript"],
+            question: "What is the latest released standard for the JavaScript language?",
+            answers: ["ES5", "EcmaScript", "JavaScript", "ES6", "ActionScript"],
             correct: 3,
         },
     ];
@@ -188,12 +188,10 @@ $(document).ready(function() {
     // Show the intro
     function showIntro() {
         quizContainer.empty();
-        
         // Intro text
-        var introText = $( "<div id='intro-text' class='card p-3'></div>");
-        introText.text("This is a quiz which will test your knowledge of Javascript. When you are ready to begin, click the Start button. You will have 75 seconds to complete the quiz. Wrong answers will deduct 20 seconds from the timer.");
+        var introText = $( "<div id='intro-text' class='text-left card p-3'></div>");
+        introText.html("<p>This is a quiz which will test your knowledge of JavaScript.</p><p>When you are ready to begin, click the Start button.</p><p>You will have 75 seconds to complete the quiz. Wrong answers will deduct 20 seconds from the timer.</p>");
         quizContainer.append(introText);
-        
         // Start button
         var startButton = $( "<button id='start-button' class='btn btn-primary btn-lg m-3'><h1><span class='fa fa-question'>Start</span></h1></button>" );
         quizContainer.append(startButton);

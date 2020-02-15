@@ -1,5 +1,5 @@
 # devquiz
-This is a basic assessment application, containing several questions about Javascript programming. 
+This is a basic assessment application, containing several questions about JavaScript programming. 
 
 All questions are multiple choice. The app displays one question at a time. Scoring is done by a timer.
 
