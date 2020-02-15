@@ -23,6 +23,7 @@ $(document).ready(function() {
         },
     ];
     var timerElement = $( "#timer-seconds" );
+    var highScoresLink = $( "#high-scores-link" );
     var timerInterval = "";
     var secondsLeft = 75;
     var finalScore = 0;
@@ -30,6 +31,12 @@ $(document).ready(function() {
     // Create container to display quiz content
     var quizContainer = $( "<div id='quiz-container' class='text-center'></div>");
     $( "#main" ).append(quizContainer);
+
+    // Show high scores list when link at top of page is clicked
+    highScoresLink.on("click", function() {
+        // Show the high scores list
+        showHighScoresList();
+    });
 
     function displayQuestion(question) {
         quizContainer.empty();
@@ -40,12 +47,10 @@ $(document).ready(function() {
         $.each(questionSet[question].answers, function(i, value) {
             var answerElement = $( "<button type='button' class='btn btn-primary my-1 p-3' id=" + i + ">" + value + "</button><br />" );
             $( "#question-card" ).append(answerElement);
-
             // When the answer button is clicked, check if it's correct
             $("#" + i).on("click", function(event) {
                 checkCorrect(event, question);
             });
-    
         });
     };
 
@@ -61,9 +66,9 @@ $(document).ready(function() {
         };
         // Go to next question
         showNextQuestion(question);
-    }
+    };
 
-    // Go to next question
+    // Calculate next question to show, or show score entry page if no more questions
     function showNextQuestion(question) {
         var nextQuestion = parseInt(question) + 1;
         if (nextQuestion < questionSet.length) {
@@ -73,7 +78,7 @@ $(document).ready(function() {
             clearInterval(timerInterval);
             showSaveHighScore();
         };
-    }
+    };
 
     // Show page that allows you to Save High Score and Initials
     function showSaveHighScore() {
@@ -81,28 +86,26 @@ $(document).ready(function() {
         // Set up high score entry and displays
         var scoreLayout = $( "<div class='row'><div class='col text-left' id='score-entry'></div><div class='col' id='high-scores'></div></div>" );
         quizContainer.append(scoreLayout);
+        scoreEntry = $( "#score-entry" );
 
         // Show the score for this quiz
         var showScore = $( "<h3>Score: " + finalScore + "</h3>" );
-        $( "#score-entry" ).append(showScore);
+        scoreEntry.append(showScore);
         // Create form to save initials with high score
         var saveScoreForm = $( "<form class='text-left'></form>" );
-        quizContainer.append(saveScoreForm);
+        scoreEntry.append(saveScoreForm);
         var initialsInput = $( "<div class='form-group'><label>Enter your initials:&nbsp;</label><input id='initials' type='text'></div>" );
         saveScoreForm.append(initialsInput);
         var submitButton = $( "<button type='submit' id='add-score' class='btn btn-primary'></button>" );
         submitButton.text("Submit");
         saveScoreForm.append(submitButton);
 
-        // Create high score list from local storage values
+        // Create container for high scores list
         var highScoresList = $("<div><h3>High Scores</h3><ul id='high-scores-list'></ul></div>");
         $( "#high-scores" ).append(highScoresList);
-        /*
-        var highScores = JSON.parse(localStorage.getItem("highScores"));
-        for (score of highScores) {
-            console.log(score);
-        }
-        */
+        
+        // Draw high scores list on page load
+        printHighScores();
 
         // Add high score to local storage
         submitButton.on("click", function(event) {
@@ -115,11 +118,45 @@ $(document).ready(function() {
             var thisInitials = $( "#initials" ).val();
             highScores[thisInitials] = finalScore;
             localStorage.setItem("highScores", JSON.stringify(highScores));
+            // Redraw high score list
+            //showHighScores();
+        });
+    };
+
+    function printHighScores() {      
+        $( "#high-scores-list" ).empty();
+        // Get the high scores from local storage and sort by score
+        var highScores = JSON.parse(localStorage.getItem("highScores"));
+        var sortedScores = Object.entries(highScores).sort(function(a, b) {
+            return b[1] - a[1];
+        });
+        // Print the scores
+        for (score of sortedScores) {
+            //console.log(score);
+            scoreElement = $( "<li>" + score[0] + ": " + score[1] + "</li>" );
+            $( "#high-scores-list" ).append(scoreElement);
+        };
+    };
+
+    // Show just high scores list (no initials entry)
+    function showHighScoresList() {
+        quizContainer.empty();
+        var highScoresList = $("<div class='card p-3'><h3>High Scores</h3><ul id='high-scores-list'></ul></div>");
+        quizContainer.append(highScoresList);
+        // Populate the high scores container
+        printHighScores();
+        // Add a button to return to the introduction screen
+        var introButton = $( "<button id='intro-button' class='btn btn-primary m-3'><h3><span class='fa fa-question'>Back</span></h3></button>" );
+        quizContainer.append(introButton);
+        introButton.on("click", function() {
+            // Show the intro
+            showIntro();
         });
     };
 
     // Show the intro
     function showIntro() {
+        quizContainer.empty();
         // Intro text
         var introText = $( "<div id='intro-text'></div>");
         introText.text("This is a quiz which will test your knowledge of Javascript. When you are ready to begin, click the Start button. You will have 75 seconds to complete the quiz. Wrong answers will deduct 20 seconds from the timer.");
