@@ -133,30 +133,25 @@ $(document).ready(function() {
     // Call showIntro for the first time
     showIntro();
 
-    // Operate the timer during the quiz
+    // Prepare and start the timer
     function setTime() {
+        // Initialize timer countdown to 75 seconds and show it on the page
         secondsLeft = 75;
         timerElement.text(secondsLeft);
-        console.log("Starting timer - current seconds left is " + secondsLeft);
+        // Start the timer
         timerInterval = setInterval(quizTimer, 1000);
-        console.log(timerInterval);
     };
 
+    // Operate the timer during the quiz
     function quizTimer() {
+        // Subtract 1 from seconds remaining
         secondsLeft--;
-        console.log("does this fire? current seconds left: " + secondsLeft);
+        // Update display with new time remaining
         timerElement.text(secondsLeft);
-        console.log(timerElement);
-
+        // Check if the timer has run out
         if(secondsLeft === 0) {
             clearInterval(timerInterval);
-            sendMessage();
+            timerElement.text = "0";
         };
     };
-
-    function sendMessage() {
-        timerElement.text = "0";
-    };
-
-
 });
