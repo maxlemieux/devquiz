@@ -57,6 +57,7 @@ $(document).ready(function() {
             console.log("incorrect");
             // Timer penalty
             secondsLeft = secondsLeft - 20;
+            timerElement.text(secondsLeft);
         };
         // Go to next question
         showNextQuestion(question);
@@ -89,17 +90,31 @@ $(document).ready(function() {
         quizContainer.append(saveScoreForm);
         var initialsInput = $( "<div class='form-group'><label>Enter your initials:&nbsp;</label><input id='initials' type='text'></div>" );
         saveScoreForm.append(initialsInput);
-        var submitButton = $( "<button type='submit' id='add-score' class='btn btn-primary'>Submit</button>" );
+        var submitButton = $( "<button type='submit' id='add-score' class='btn btn-primary'></button>" );
+        submitButton.text("Submit");
         saveScoreForm.append(submitButton);
 
         // Create high score list from local storage values
         var highScoresList = $("<div><h3>High Scores</h3><ul id='high-scores-list'></ul></div>");
         $( "#high-scores" ).append(highScoresList);
+        /*
+        var highScores = JSON.parse(localStorage.getItem("highScores"));
+        for (score of highScores) {
+            console.log(score);
+        }
+        */
 
-        $("#add-score").on("click", function(event) {
-            // Add high score to local storage
+        // Add high score to local storage
+        submitButton.on("click", function(event) {
             event.preventDefault();
-            localStorage.setItem($( "#initials" ).val(), finalScore);
+            if (JSON.parse(localStorage.getItem("highScores"))) {
+                var highScores = JSON.parse(localStorage.getItem("highScores"));
+            } else {
+                var highScores = {};
+            };
+            var thisInitials = $( "#initials" ).val();
+            highScores[thisInitials] = finalScore;
+            localStorage.setItem("highScores", JSON.stringify(highScores));
         });
     };
 
@@ -122,16 +137,11 @@ $(document).ready(function() {
     function startQuiz() {
         // Empty out the quiz container to prepare to show questions
         quizContainer.empty();
-
         // Display the first question
         displayQuestion(0);
-        
         // Start the timer
         setTime();
     };
-
-    // Call showIntro for the first time
-    showIntro();
 
     // Prepare and start the timer
     function setTime() {
@@ -154,4 +164,7 @@ $(document).ready(function() {
             timerElement.text = "0";
         };
     };
+
+    // Call showIntro for the first time
+    showIntro();
 });
