@@ -27,6 +27,9 @@ $(document).ready(function() {
             correct: 1,
         }
     ];
+
+    // Initialize global variables
+    var mainElement = $( "#main" );
     var timerElement = $( "#timer-seconds" );
     var highScoresLink = $( "#high-scores-link" );
     var timerInterval = "";
@@ -35,7 +38,7 @@ $(document).ready(function() {
 
     // Create container to display quiz content
     var quizContainer = $( "<div id='quiz-container' class='text-center'></div>");
-    $( "#main" ).append(quizContainer);
+    mainElement.append(quizContainer);
 
     // Show high scores list when link at top of page is clicked
     highScoresLink.on("click", function() {
@@ -49,11 +52,16 @@ $(document).ready(function() {
         var questionContainer = $( "<div class='card p-3' id='question-card'></div>" );
         quizContainer.append(questionContainer);
         var questionElement = $( "<h3>" + questionSet[question].question + "</h3>" );
-        $( "#question-card" ).append(questionElement);
+        questionContainer.append(questionElement);
+
         // Loop through the answers for the question and print them as buttons
         $.each(questionSet[question].answers, function(i, value) {
-            var answerElement = $( "<button type='button' class='btn btn-primary my-1 p-3' id=" + i + ">" + value + "</button><br />" );
-            $( "#question-card" ).append(answerElement);
+            var answerElement = $( "<button type='button' class='btn btn-primary my-1 p-3'></button>" );
+            answerElement.attr("id", i);
+            answerElement.text(value);
+            questionContainer.append(answerElement);
+            questionContainer.append($("<br />"));
+
             // When the answer button is clicked, check to see if it's correct
             $("#" + i).on("click", function(event) {
                 checkCorrect(event, question);
@@ -69,6 +77,7 @@ $(document).ready(function() {
         } else { // incorrect
             var alertIncorrect = $( "<div class='alert alert-danger m-3'>Incorrect!</div>" );
             $( "#main" ).append(alertIncorrect);
+            
             // Timer penalty
             secondsLeft = secondsLeft - 20;
             timerElement.text(secondsLeft);
@@ -90,6 +99,7 @@ $(document).ready(function() {
             outOfTime();
         } else {
             var nextQuestion = parseInt(question) + 1;
+
             // Does the next question exist? Set final score and show high score entry if not
             if (nextQuestion < questionSet.length) {
                 displayQuestion(nextQuestion);
@@ -106,7 +116,10 @@ $(document).ready(function() {
         quizContainer.empty();
 
         // Set up high score entry and displays
-        var scoreLayout = $( "<div class='row'><div class='col text-left' id='score-entry'></div><div class='col' id='high-scores'></div></div>" );
+        var scoreLayout = $( "<div class='row'>\
+                                <div class='col text-left' id='score-entry'></div>\
+                                <div class='col' id='high-scores'></div>\
+                            </div>" );
         quizContainer.append(scoreLayout);
         scoreEntry = $( "#score-entry" );
 
@@ -117,7 +130,10 @@ $(document).ready(function() {
         // Create form to save initials with high score
         var saveScoreForm = $( "<form class='text-left'></form>" );
         scoreEntry.append(saveScoreForm);
-        var initialsInput = $( "<div class='form-group'><label>Enter your initials:&nbsp;</label><input id='initials' type='text'></div>" );
+        var initialsInput = $( "<div class='form-group'>\
+                                <label>Enter your initials:&nbsp;</label>\
+                                <input id='initials' type='text'>\
+                                </div>" );
         saveScoreForm.append(initialsInput);
         var submitButton = $( "<button type='submit' id='add-score' class='btn btn-primary'></button>" );
         submitButton.text("Submit");
@@ -151,7 +167,8 @@ $(document).ready(function() {
 
     function printHighScores() {  
         highScoresList = $( "#high-scores-list" );    
-        highScoresList.empty();        
+        highScoresList.empty();
+
         // Get the high scores from local storage and sort by score
         if (localStorage.getItem("highScores")) {
             var highScores = JSON.parse(localStorage.getItem("highScores"));
@@ -177,15 +194,19 @@ $(document).ready(function() {
         timerElement.text("0");
         var highScoresList = $("<div class='card p-3'><h3>High Scores</h3><ul id='high-scores-list'></ul></div>");
         quizContainer.append(highScoresList);
+
         // Populate the high scores container
         printHighScores();
+        
         // Show button to return to intro
         showIntroButton();    
     };
 
     function showIntroButton() {
         // Add a button to return to the introduction screen
-        var introButton = $( "<button id='intro-button' class='btn btn-primary m-3'><h3><span class='fa fa-question'>Back</span></h3></button>" );
+        var introButton = $( "<button id='intro-button' class='btn btn-primary m-3'>\
+                                <h3><span class='fa fa-question'>Back</span></h3>\
+                            </button>" );
         quizContainer.append(introButton);
         introButton.on("click", function() {
             showIntro();
@@ -195,12 +216,18 @@ $(document).ready(function() {
     // Show the intro
     function showIntro() {
         quizContainer.empty();
+
         // Intro text
         var introText = $( "<div id='intro-text' class='text-left card p-3'></div>");
-        introText.html("<p>This is a quiz which will test your knowledge of JavaScript.</p><p>When you are ready to begin, click the Start button.</p><p>You will have 75 seconds to complete the quiz. Wrong answers will deduct 20 seconds from the timer.</p>");
+        introText.html("<p>This is a quiz which will test your knowledge of JavaScript.</p>\
+                        <p>When you are ready to begin, click the Start button.</p>\
+                        <p>You will have 75 seconds to complete the quiz. Wrong answers will deduct 20 seconds from the timer.</p>");
         quizContainer.append(introText);
+
         // Start button
-        var startButton = $( "<button id='start-button' class='btn btn-primary btn-lg m-3'><h1><span class='fa fa-question'>Start</span></h1></button>" );
+        var startButton = $( "<button id='start-button' class='btn btn-primary btn-lg m-3'>\
+                                <h1><span class='fa fa-question'>Start</span></h1>\
+                            </button>" );
         quizContainer.append(startButton);
         startButton.on("click", function() {
             startQuiz();
@@ -210,8 +237,10 @@ $(document).ready(function() {
     // Run the quiz!
     function startQuiz() {
         quizContainer.empty();
+
         // Display the first question
         displayQuestion(0);     
+        
         // Start the timer
         setTime();
     };
@@ -221,6 +250,7 @@ $(document).ready(function() {
         // Initialize timer countdown to 75 seconds and show it on the page
         secondsLeft = 75;
         timerElement.text(secondsLeft);
+
         // Start the timer
         timerInterval = setInterval(quizTimer, 1000);
     };
@@ -229,8 +259,10 @@ $(document).ready(function() {
     function quizTimer() {
         // Subtract 1 from seconds remaining
         secondsLeft--;
+
         // Update display with new time remaining
         timerElement.text(secondsLeft);
+        
         // Check if the timer has run out
         if (secondsLeft < 1) {
             outOfTime();
