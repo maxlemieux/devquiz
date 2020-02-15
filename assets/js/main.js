@@ -10,15 +10,25 @@ questionSet = [
         answers: ["Red", "Blue", "Yellow"],
         correct: 1,
     },
+    {
+        question: "What is the strict equality operator in Javascript?",
+        answers: ["+=", "==", "!==", "==="],
+        correct: 3,
+    },
+    {
+        question: "What is the latest released standard for the Javascript language?",
+        answers: ["ES5", "EcmaScript", "Javascript", "ES6", "ActionScript"],
+        correct: 3,
+    },
 ];
 
 $(document).ready(function() {
-    var timerLabel = $( "<span id='timer-label'>Time:&nbsp;</span>" );
-    var timerSeconds = $( "<span id='timer-seconds'>0</span>" );
-    $( "#timer-container" ).append(timerLabel);
-    $( "#timer-container" ).append(timerSeconds);
-    //$( "#timer-container" ).hide();
+    var timerElement = $( "#timer-seconds" );
+    var timerInterval = "";
+    var secondsLeft = 75;
+    var finalScore = 0;
 
+    // Create container to display quiz content
     var quizContainer = $( "<div id='quiz-container' class='text-center'></div>");
     $( "#main" ).append(quizContainer);
 
@@ -27,10 +37,9 @@ $(document).ready(function() {
         var questionElement = $( "<p>" + questionSet[question].question + "</p>" );
         $( "#quiz-container" ).append(questionElement);
         $.each(questionSet[question].answers, function(i, value) {
-            var answerElement = $( "<button id=" + i + ">" + value + "</button><br />" );
+            var answerElement = $( "<button type='button' class='btn btn-primary my-1' id=" + i + ">" + value + "</button><br />" );
             $( "#quiz-container" ).append(answerElement);
-            //console.log(answerElement);
-
+            
             // When the answer button is clicked, check if it's correct
             $("#" + i).on("click", function(event) {
                 checkCorrect(event, question);
@@ -41,27 +50,33 @@ $(document).ready(function() {
 
     // Check if the answer given was the correct one
     function checkCorrect(event, question) {
-        //console.log(event.target.id);
-        //console.log(questionSet[question].correct);
         if (event.target.id == questionSet[question].correct) {
             console.log("correct");
-            console.log(questionSet.length);
-            console.log(question);
-            nextQuestion = parseInt(question) + 1;
-            if (nextQuestion < questionSet.length) {
-                displayQuestion(nextQuestion);
-            } else {
-                showSaveHighScore();
-            };
         } else {
             console.log("incorrect");
+            // Timer penalty
+            secondsLeft = secondsLeft - 20;
+        };
+        // Go to next question
+        showNextQuestion(question);
+    }
+
+    // Go to next question
+    function showNextQuestion(question) {
+        nextQuestion = parseInt(question) + 1;
+        if (nextQuestion < questionSet.length) {
+            displayQuestion(nextQuestion);
+        } else {
+            finalScore = secondsLeft;
+            clearInterval(timerInterval);
+            showSaveHighScore();
         };
     }
 
     // Show page that allows you to Save High Score and Initials
     function showSaveHighScore() {
         $( "#quiz-container" ).empty();
-        var showScore = $( "<p>Score: </p>" );
+        var showScore = $( "<p>Score: " + finalScore + "</p>" );
         $( "#quiz-container" ).append(showScore);
     };
 
@@ -69,7 +84,7 @@ $(document).ready(function() {
     function showIntro() {
         // Intro text with start button
         var introText = $( "<div id='intro-text'></div>");
-        introText.text("lkajsdf;lkjas;dlfkjds;lakfjsdlkjf;");
+        introText.text("This is a quiz which will test your knowledge of Javascript. When you are ready to begin, click the Start button. You will have 75 seconds to complete the quiz. Wrong answers will deduct 20 seconds from the timer.");
         var startButton = $( "<button id='start-button' class='btn btn-primary btn-lg'><h1><span class='fa fa-question'>Start</span></h1></button>" );
 
         $( "#quiz-container" ).append(introText);
@@ -83,44 +98,43 @@ $(document).ready(function() {
 
     // Run the quiz!
     function startQuiz() {
-        console.log("Starting quiz");
         // Empty out the quiz container to prepare to show questions
         $( "#quiz-container" ).empty();
+
+        // Display the first question
         displayQuestion(0);
+        
+        // Start the timer
+        setTime();
     };
 
     // Call showIntro for the first time
     showIntro();
 
-/*
-    var timerElement = $( "#timer" );
-    var mainEl = $( "#main" );
-    
-    var secondsLeft = 10;
-
+    // Operate the timer during the quiz
     function setTime() {
-    var timerInterval = setInterval(function() {
+        secondsLeft = 75;
+        timerElement.text(secondsLeft);
+        console.log("Starting timer - current seconds left is " + secondsLeft);
+        timerInterval = setInterval(quizTimer, 1000);
+        console.log(timerInterval);
+    };
+
+    function quizTimer() {
         secondsLeft--;
-        timerElement.textContent = secondsLeft + " seconds left till colorsplosion.";
+        console.log("does this fire? current seconds left: " + secondsLeft);
+        timerElement.text(secondsLeft);
+        console.log(timerElement);
 
         if(secondsLeft === 0) {
-        clearInterval(timerInterval);
-        sendMessage();
-        }
-
-    }, 2000);
-    }
+            clearInterval(timerInterval);
+            sendMessage();
+        };
+    };
 
     function sendMessage() {
-        timerElement.textContent = " ";
+        timerElement.text = "0";
+    };
 
-    var imgEl = document.createElement("img");
 
-    imgEl.setAttribute("src", "images/image_1.jpg");
-    mainEl.appendChild(imgEl);
-
-    }
-
-    setTime();
-*/
 });
