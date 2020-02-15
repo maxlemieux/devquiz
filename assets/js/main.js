@@ -144,24 +144,29 @@ $(document).ready(function() {
 
     function printHighScores() {  
         highScoresList = $( "#high-scores-list" );    
-        highScoresList.empty();
-        
+        highScoresList.empty();        
         // Get the high scores from local storage and sort by score
-        var highScores = JSON.parse(localStorage.getItem("highScores"));
-        var sortedScores = Object.entries(highScores).sort(function(a, b) {
-            return b[1] - a[1];
-        });
-        
-        // Print the scores
-        for (score of sortedScores) {
-            scoreElement = $( "<li>" + score[0] + ": " + score[1] + "</li>" );
+        if (localStorage.getItem("highScores")) {
+            var highScores = JSON.parse(localStorage.getItem("highScores"));
+            var sortedScores = Object.entries(highScores).sort(function(a, b) {
+                return b[1] - a[1];
+            });
+            
+            // Print the scores
+            for (score of sortedScores) {
+                var scoreElement = $( "<li>" + score[0] + ": " + score[1] + "</li>" );
+                highScoresList.append(scoreElement);
+            };
+        } else {
+            var scoreElement = $( "<li>No high scores yet. You could be the first!</li>" );
             highScoresList.append(scoreElement);
-        };
+        }
     };
 
     // Show just high scores list (no initials entry)
     function showHighScoresList() {
         quizContainer.empty();
+        clearInterval(timerInterval);
         timerElement.text("0");
         var highScoresList = $("<div class='card p-3'><h3>High Scores</h3><ul id='high-scores-list'></ul></div>");
         quizContainer.append(highScoresList);
