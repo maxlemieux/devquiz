@@ -38,12 +38,14 @@ $(document).ready(function() {
         showHighScoresList();
     });
 
+    // Display a question and possible answers on page
     function displayQuestion(question) {
         quizContainer.empty();
         var questionContainer = $( "<div class='card p-3' id='question-card'></div>" );
         quizContainer.append(questionContainer);
-        var questionElement = $( "<p>" + questionSet[question].question + "</p>" );
+        var questionElement = $( "<h3>" + questionSet[question].question + "</h3>" );
         $( "#question-card" ).append(questionElement);
+        // Loop through the answers for the question and print them as buttons
         $.each(questionSet[question].answers, function(i, value) {
             var answerElement = $( "<button type='button' class='btn btn-primary my-1 p-3' id=" + i + ">" + value + "</button><br />" );
             $( "#question-card" ).append(answerElement);
@@ -57,13 +59,23 @@ $(document).ready(function() {
     // Check if the answer given was the correct one
     function checkCorrect(event, question) {
         if (event.target.id == questionSet[question].correct) {
-            console.log("correct");
+            var alertCorrect = $( "<div class='alert alert-success m-3'>Correct!</div>" );
+            $( "#main" ).append(alertCorrect);
         } else {
-            console.log("incorrect");
+            var alertIncorrect = $( "<div class='alert alert-danger m-3'>Incorrect!</div>" );
+            $( "#main" ).append(alertIncorrect);
             // Timer penalty
             secondsLeft = secondsLeft - 20;
             timerElement.text(secondsLeft);
         };
+
+        // Fade out the correctness alert
+        window.setTimeout(function() {
+            $(".alert").fadeTo(500, 0).slideUp(500, function(){
+                $(this).remove(); 
+            });
+        }, 1000);
+        
         // Go to next question
         showNextQuestion(question);
     };
@@ -119,12 +131,13 @@ $(document).ready(function() {
             highScores[thisInitials] = finalScore;
             localStorage.setItem("highScores", JSON.stringify(highScores));
             // Redraw high score list
-            //showHighScores();
+            showHighScoresList();
         });
     };
 
-    function printHighScores() {      
-        $( "#high-scores-list" ).empty();
+    function printHighScores() {  
+        highScoresList = $( "#high-scores-list" );    
+        highScoresList.empty();
         // Get the high scores from local storage and sort by score
         var highScores = JSON.parse(localStorage.getItem("highScores"));
         var sortedScores = Object.entries(highScores).sort(function(a, b) {
@@ -134,13 +147,14 @@ $(document).ready(function() {
         for (score of sortedScores) {
             //console.log(score);
             scoreElement = $( "<li>" + score[0] + ": " + score[1] + "</li>" );
-            $( "#high-scores-list" ).append(scoreElement);
+            highScoresList.append(scoreElement);
         };
     };
 
     // Show just high scores list (no initials entry)
     function showHighScoresList() {
         quizContainer.empty();
+        timerElement.text("0");
         var highScoresList = $("<div class='card p-3'><h3>High Scores</h3><ul id='high-scores-list'></ul></div>");
         quizContainer.append(highScoresList);
         // Populate the high scores container
@@ -158,11 +172,11 @@ $(document).ready(function() {
     function showIntro() {
         quizContainer.empty();
         // Intro text
-        var introText = $( "<div id='intro-text'></div>");
+        var introText = $( "<div id='intro-text' class='card p-3'></div>");
         introText.text("This is a quiz which will test your knowledge of Javascript. When you are ready to begin, click the Start button. You will have 75 seconds to complete the quiz. Wrong answers will deduct 20 seconds from the timer.");
         quizContainer.append(introText);
         // Start button
-        var startButton = $( "<button id='start-button' class='btn btn-primary btn-lg'><h1><span class='fa fa-question'>Start</span></h1></button>" );
+        var startButton = $( "<button id='start-button' class='btn btn-primary btn-lg m-3'><h1><span class='fa fa-question'>Start</span></h1></button>" );
         quizContainer.append(startButton);
         startButton.on("click", function() {
             // Run the quiz!
