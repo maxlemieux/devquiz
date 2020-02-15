@@ -1,28 +1,27 @@
-// Array of questions to ask in the quiz
-questionSet = [
-    {
-        question: "Why is up?",
-        answers: ["Just because", "I don't know"],
-        correct: 0
-    },
-    {
-        question: "What is your favorite color?",
-        answers: ["Red", "Blue", "Yellow"],
-        correct: 1,
-    },
-    {
-        question: "What is the strict equality operator in Javascript?",
-        answers: ["+=", "==", "!==", "==="],
-        correct: 3,
-    },
-    {
-        question: "What is the latest released standard for the Javascript language?",
-        answers: ["ES5", "EcmaScript", "Javascript", "ES6", "ActionScript"],
-        correct: 3,
-    },
-];
-
 $(document).ready(function() {
+    // Array of questions to ask in the quiz
+    var questionSet = [
+        {
+            question: "Why is up?",
+            answers: ["Just because", "I don't know"],
+            correct: 0
+        },
+        {
+            question: "What is your favorite color?",
+            answers: ["Red", "Blue", "Yellow"],
+            correct: 1,
+        },
+        {
+            question: "What is the strict equality operator in Javascript?",
+            answers: ["+=", "==", "!==", "==="],
+            correct: 3,
+        },
+        {
+            question: "What is the latest released standard for the Javascript language?",
+            answers: ["ES5", "EcmaScript", "Javascript", "ES6", "ActionScript"],
+            correct: 3,
+        },
+    ];
     var timerElement = $( "#timer-seconds" );
     var timerInterval = "";
     var secondsLeft = 75;
@@ -94,7 +93,6 @@ $(document).ready(function() {
         // Create high score list from local storage values
         var highScoresList = $("<div><h3>High Scores</h3><ul id='high-scores-list'></ul></div>");
         $( "#high-scores" ).append(highScoresList);
-//        for (score of localStorage.)
 
         $("#add-score").on("click", function(event) {
             // Add high score to local storage
